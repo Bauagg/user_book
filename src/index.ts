@@ -7,6 +7,7 @@ import ConnectDB from './database/db';
 import bookRoutes from './routes/bookRoutes'
 
 
+
 const app = express();
 const port = 3000;
 
@@ -24,6 +25,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/books', bookRoutes);
+
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript with Express!');
