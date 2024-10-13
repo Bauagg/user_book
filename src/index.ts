@@ -5,6 +5,8 @@ import morgan from "morgan"
 import cors from "cors"
 import ConnectDB from './database/db';
 
+// import Router
+import userRouter from "./routes/userRouter"
 
 const app = express();
 const port = 3000;
@@ -22,9 +24,7 @@ app.use(morgan("dev"))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, TypeScript with Express!');
-});
+app.use('/api', userRouter)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     errorHandler(err as CustomError, req, res, next); // Casting Error to CustomError
