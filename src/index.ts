@@ -3,10 +3,18 @@ import { errorHandler, CustomError } from './midleware/err-handler';
 import cookieParser from "cookie-parser"
 import morgan from "morgan"
 import cors from "cors"
+import ConnectDB from './database/db';
 
 
 const app = express();
 const port = 3000;
+
+//connectDatabase
+ConnectDB().then(() => {
+    console.log('Connected to MongoDB');
+}).catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+});
 
 app.use(cors())
 app.use(express.json())
