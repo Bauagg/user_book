@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import { errorHandler, CustomError } from './midleware/err-handler';
 import ConnectDB from './database/db';
 
+
 const app = express();
 const port = 3000;
 
