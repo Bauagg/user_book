@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import morgan from "morgan"
 import cors from "cors"
 import ConnectDB from './database/db';
+import bookRoutes from './routes/bookRoutes'
 
 
 const app = express();
@@ -21,6 +22,8 @@ app.use(express.json())
 app.use(morgan("dev"))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
+
+app.use('/api/books', bookRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, TypeScript with Express!');
