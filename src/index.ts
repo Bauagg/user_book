@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import morgan from "morgan"
 import cors from "cors"
 import ConnectDB from './database/db';
+import bookRoutes from './routes/bookRoutes'
 
 // import Router
 import userRouter from "./routes/userRouter"
@@ -24,7 +25,11 @@ app.use(morgan("dev"))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/api', userRouter)
+app.use('/api/books', bookRoutes);
+
+app.get('/', (req: Request, res: Response) => {
+    res.send('Hello, TypeScript with Express!');
+});
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     errorHandler(err as CustomError, req, res, next); // Casting Error to CustomError
