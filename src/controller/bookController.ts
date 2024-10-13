@@ -14,15 +14,28 @@ export const addBook = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// Mengambil semua buku
+
 export const getAllBooks = async (req: Request, res: Response): Promise<void> => {
     try {
-        const books = await Book.find();
-        res.status(200).json(books); 
+        const books = await Book.find(); 
+
+        const availableBooks = books.filter(book=> book.stock> 0 )
+        
+        // Mengubah format response untuk menampilkan quantity
+        const bookList = availableBooks.map(book => ({
+            id: book._id,
+            code: book.code,
+            title: book.title,
+            author: book.author,
+            stock: book.stock
+        }));
+
+        res.status(200).json(bookList); 
     } catch (error) {
         res.status(500).json({ message: 'Gagal mengambil daftar buku' });
     }
 };
+
 
 // Mendapatkan buku berdasarkan ID
 export const getBookById = async (req: Request, res: Response): Promise<void> => {
