@@ -47,7 +47,6 @@ export const addLoan = async (req: Request, res: Response, next: NextFunction): 
     }
 };
 
-
 // Mengembalikan buku
 export const returnBook = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.params; // Mengambil ID dari parameter URL
@@ -81,14 +80,73 @@ export const returnBook = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+export const getAllLoanPanel = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const loanData = await Loan.aggregate([
+            {
+                $group: {
+                    _id: "$memberId", // Group by memberId
+                    totalBooksLoaned: { $sum: 1 }, // Count the number of loans (books)
+                    loans: { $push: "$$ROOT" } // Push the entire loan document for later use
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users', // Lookup the 'users' collection (change this if your collection name is different)
+                    localField: '_id', // Match '_id' with 'memberId' in 'users' collection
+                    foreignField: '_id',
+                    as: 'memberInfo'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'books', // Lookup the 'books' collection
+                    localField: 'loans.bookId', // Match 'bookId' in the 'loans' subdocument
+                    foreignField: '_id',
+                    as: 'bookInfo'
+                }
+            },
+            {
+                $unwind: '$memberInfo' // Unwind to flatten the memberInfo array
+            },
+            {
+                $project: {
+                    _id: 1, // Include the memberId as _id
+                    totalBooksLoaned: 1, // Include the total count
+                    memberInfo: {
+                        _id: "$memberInfo._id",
+                        name: "$memberInfo.name",
+                        email: "$memberInfo.email",
+                        role: "$memberInfo.role",
+                        createdAt: "$memberInfo.createdAt",
+                        updatedAt: "$memberInfo.updatedAt",
+                        __v: "$memberInfo.__v" // Include version key if necessary
+                    },
+                    bookInfo: 1 // Include book info
+                    // Exclude 'loans' since it's no longer needed in the response
+                }
+            }
+        ]);
+
+        if (loanData.length === 0) {
+            res.status(404).json({ message: "No loans found for this member." });
+            return;
+        }
+
+        res.status(200).json({
+            message: "Total number of books loaned by the member",
+            data: loanData // Send the first (and only) result for the current member
+        });
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
 
 // Mengambil semua pinjaman
 export const getAllLoans = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-
-        console.log(req.user?.userId)
-        // { memberId: }
-        const loans = await Loan.find().populate('bookId', 'title').populate('memberId', 'name');
+        const loans = await Loan.find({ memberId: req.user?.userId }).populate('bookId', 'title').populate('memberId', 'name');
 
         res.status(200).json({ message: "List of successful books", data: loans });
     } catch (error) {
