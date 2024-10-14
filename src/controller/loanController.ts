@@ -175,7 +175,7 @@ export const setupDailyLoanCronJob = (): void => {
             });
 
             for (let data of loansToday) {
-                await User.findByIdAndUpdate(data.memberId, { pinalti: 1 }, { new: true })
+                await User.findByIdAndUpdate(data.memberId, { pinalti: 1, date_pinalti: new Date() }, { new: true })
             }
         } catch (error) {
             console.error('Error processing daily loans:', error);
@@ -196,7 +196,7 @@ export const setupuserPinaltiCronJob = (): void => {
             const startOfDay = new Date(sevenDaysAgo.setHours(0, 0, 0, 0));
             const endOfDay = new Date(sevenDaysAgo.setHours(23, 59, 59, 999));
 
-            const user = await User.find({ createdAt: { $gte: startOfDay, $lte: endOfDay }, pinalti: 1 })
+            const user = await User.find({ date_pinalti: { $gte: startOfDay, $lte: endOfDay }, pinalti: 1 })
 
             for (let data of user) {
                 await User.findByIdAndUpdate(data._id, { pinalti: 0 }, { new: true })

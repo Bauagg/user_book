@@ -6,6 +6,7 @@ export interface IUser extends Document {
     password: string;
     role: 'member' | 'admin';
     pinalti: number;
+    date_pinalti: Date;
 }
 
 const userSchema: Schema<IUser> = new Schema({
@@ -44,6 +45,10 @@ const userSchema: Schema<IUser> = new Schema({
     pinalti: {
         type: Number,
         default: 0,
+    },
+    date_pinalti: {
+        type: Date,
+        default: null
     }
 }, { timestamps: true })
 
