@@ -12,6 +12,9 @@ import userRouter from "./routes/userRouter"
 import bookRoutes from './routes/bookRoutes'
 import loanRoutes from './routes/loanRoutes'
 
+// import Cron Job
+import { setupDailyLoanCronJob, setupuserPinaltiCronJob } from './controller/loanController';
+
 const app = express();
 const port = 3000;
 
@@ -34,8 +37,13 @@ app.use('/api/books', bookRoutes);
 app.use('/api/user', userRouter)
 app.use('/api/loan', loanRoutes)
 
+// cron job
+setupDailyLoanCronJob()
+setupuserPinaltiCronJob()
+
+// Casting Error to CustomError
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    errorHandler(err as CustomError, req, res, next); // Casting Error to CustomError
+    errorHandler(err as CustomError, req, res, next);
 });
 
 app.listen(port, () => {

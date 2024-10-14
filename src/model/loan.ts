@@ -1,37 +1,21 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ILoan extends Document {
-    bookId: mongoose.Types.ObjectId;  
-    memberId: mongoose.Types.ObjectId; 
-    borrowedAt: Date;                  
-    dueDate: Date;                     
-    returnedAt?: Date;                
-    status: 'active' | 'returned';    
+    bookId: mongoose.Types.ObjectId;
+    memberId: mongoose.Types.ObjectId;
+    status: 'active' | 'returned';
 }
 
 const loanSchema: Schema<ILoan> = new Schema({
     bookId: {
         type: Schema.Types.ObjectId,
-        ref: 'Book', 
+        ref: 'Book',
         required: true,
     },
     memberId: {
         type: Schema.Types.ObjectId,
-        ref: 'User', 
+        ref: 'User',
         required: true,
-    },
-    borrowedAt: {
-        type: Date,
-        default: Date.now, 
-        required: true,
-    },
-    dueDate: {
-        type: Date,
-        required: true,
-    },
-    returnedAt: {
-        type: Date,
-        default: null, 
     },
     status: {
         type: String,
@@ -39,7 +23,7 @@ const loanSchema: Schema<ILoan> = new Schema({
             values: ['active', 'returned'],
             message: '{VALUE} is not a valid status',
         },
-        default: 'active', 
+        default: 'active',
     },
 }, { timestamps: true });
 

@@ -5,6 +5,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     role: 'member' | 'admin';
+    pinalti: number;
 }
 
 const userSchema: Schema<IUser> = new Schema({
@@ -40,6 +41,10 @@ const userSchema: Schema<IUser> = new Schema({
         },
         default: 'member',
     },
+    pinalti: {
+        type: Number,
+        default: 0,
+    }
 }, { timestamps: true })
 
 // Membuat model dari schema
